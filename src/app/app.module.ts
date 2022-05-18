@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {DailySelectionModule} from './daily-selection/daily-selection.module';
 import {WeeklySelectionModule} from './weekly-selection/weekly-selection.module';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,9 @@ import {WeeklySelectionModule} from './weekly-selection/weekly-selection.module'
   imports: [
     BrowserModule,
     DailySelectionModule,
-    WeeklySelectionModule
+    WeeklySelectionModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

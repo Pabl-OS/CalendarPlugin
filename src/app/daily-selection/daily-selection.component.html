@@ -1,31 +1,108 @@
-<div class="calendar__wrapper">
-  <div class="calendar__input-wrapper" (click)="show = !show">
-    <input readonly class="calendar__input" [(ngModel)]="selectedDate">
-    <img class="icon_calendar" [src]="'assets/calendar-icon.png'" alt="calendar icon" />
-  </div>
-  <div class="calendar" *ngIf="show" #calendar>
-    <div class="calendar__navs">
-      <div class="calendar__month-nav">
-        <button class="calendar__nav-btn" (click)="prevMonth()">&lt;</button>
-        <span>{{currentDate.format('MMMM').toUpperCase()}}  {{currentDate.format('YYYY')}}</span>
-        <button class="calendar__nav-btn" [disabled]="!isDisabledMonth(currentDate)" (click)="nextMonth()">&gt;</button>
-      </div>
-    </div>
-    <div class="calendar__month">
-      <div class="calendar__day-names">
-        <div class="calendar__day-name" *ngFor="let name of namesOfDays">{{name}}</div>
-      </div>
-      <div class="calendar__weeks">
-        <div class="calendar__week" *ngFor="let week of weeks">
-          <ng-container *ngFor="let day of week">
-            <div class="calendar__date"
-                 [ngClass]="{'today': day.today, 'selected': day.selected, 'disabled': !isSelectedMonth(day.mDate)}"
-                 (click)="selectDate(day)">
-              <span class="calendar__number">{{day.mDate.date()}}</span>
-            </div>
-          </ng-container>
+
+<div class="container">
+  <form [formGroup]="FormRangeDate"  (ngSubmit)="handleCreateCalendar()">
+    <div class="row mt-4">
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <select name="startMonth"
+                    formControlName="startMonth"
+                    class="form-control"
+                    formControlName="startMonth">
+              <option *ngFor="let month of nameMonths" 
+                      [value]="month.number" >{{month.name}}</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-2">
+            <select  name="initialYear"
+                     class="form-control"
+                     formControlName="initialYear">
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+          </div>
         </div>
       </div>
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-6 mb-2">
+            <select name="endMonth"
+                    class="form-control"
+                    formControlName="endMonth">
+              <option *ngFor="let month of nameMonths; let index = index" 
+                      [value]="month.number">{{month.name}}</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-2">
+            <select name="endYear"
+                    class="form-control"
+                    formControlName="endYear">
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary">
+          <i class="fa fa-search"></i>
+          Ver/Editar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<ul class="nav justify-content-center mt-3 mb-3" >
+  <li class="nav-item" 
+      *ngFor="let day of namesOfDaysAll">
+    <a class="nav-link cursor_pointer" (click)="selectAnyDayOfAll(day)" >{{day}}</a>
+  </li>
+  <li class="nav-item" >
+    <a class="nav-link btn btn-info text-light" >todo/limpiar</a>
+  </li>
+</ul>
+
+<div class="container">
+  <div class="row" *ngIf="!loadingCalendar" >
+    <div class="col-md-4" *ngFor="let month of calendarArray ; let i =index">
+      <div class="card">
+        <div class="card-header  row text-center">
+          <h6 class="col"><b>{{month.monthName}}</b> </h6>
+          <small class="col">{{month.year}}</small>
+        </div>  
+      </div>
+      <div class="card-body">
+        <div class="calendar__day-names" >
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Sunday',month.monthName,month.year)">D</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Monday',month.monthName,month.year)">L</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Tuesday',month.monthName,month.year)">M</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Wednesday',month.monthName,month.year)">M</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Thursday',month.monthName,month.year)">J</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Friday',month.monthName,month.year)">V</div>
+          <div class="calendar__day-name cursor_pointer"
+               (click)="selectAnyDayOfWeek('Saturday',month.monthName,month.year)">S</div>
+        </div>
+
+        <div class="calendar__weeks" >
+          <div class="calendar__week" *ngFor="let week of month.month">
+            <ng-container *ngFor="let day of week.days">
+              <div class="calendar__date"
+                  [class.selected]="day.isSelected"
+                  (click)="selectDay(day.dateShort)">
+                <span class="calendar__number">{{day.day}}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
